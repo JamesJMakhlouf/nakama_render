@@ -11,6 +11,7 @@ RUN npm install
 COPY data/ ./
 
 RUN chmod +x ./node_modules/.bin/tsc
+RUN chmod +x ./node_modules/.bin/copyfiles
 
 # Build your project (run build script from package.json)
 RUN npm run build
