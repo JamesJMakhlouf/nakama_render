@@ -32,8 +32,8 @@ services:
         echo "DB_HOST=$DB_HOST"
         echo "DB_PORT=$DB_PORT"
         echo "DB_NAME=$DB_NAME"
-        /nakama/nakama migrate up --database.address postgres:${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME} &&
-        exec /nakama/nakama --name nakama1 --database.address postgres:${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME} --logger.level DEBUG --session.token_expiry_sec 7200
+        /nakama/nakama migrate up --database.address postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME} &&
+        exec /nakama/nakama --name nakama1 --database.address postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME} --logger.level DEBUG --session.token_expiry_sec 7200
     restart: always
     links:
       - "postgres:db"
