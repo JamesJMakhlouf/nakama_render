@@ -1,0 +1,19 @@
+# Node stuff
+node_modules/
+
+# Environment files
+.env
+
+# Build artifacts
+build/
+dist/
+
+# Logs
+*.log
+
+# Docker data volume if you want to ignore locally stored data (optional)
+data/
+
+# OS files
+.DS_Store
+Thumbs.db

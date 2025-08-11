@@ -4,18 +4,19 @@ services:
     container_name: postgres
     image: postgres:12.2-alpine
     environment:
-      - POSTGRES_DB=nakama
-      - POSTGRES_PASSWORD=D@t@_Project
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
     volumes:
       - data:/var/lib/postgresql/data
     expose:
+      - "${DB_PORT}"
       - "8080"
-      - "5432"
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:${DB_PORT}"
       - "8080:8080"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "nakama"]
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
       interval: 3s
       timeout: 3s
       retries: 5
@@ -26,8 +27,8 @@ services:
       - "/bin/sh"
       - "-ecx"
       - >
-        /nakama/nakama migrate up --database.address postgres:D@t@_Project@postgres:5432/nakama &&
-        exec /nakama/nakama --name nakama1 --database.address postgres:D@t@_Project@postgres:5432/nakama --logger.level DEBUG --session.token_expiry_sec 7200        
+        /nakama/nakama migrate up --database.address ${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME} &&
+        exec /nakama/nakama --name nakama1 --database.address ${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME} --logger.level DEBUG --session.token_expiry_sec 7200        
     restart: always
     links:
       - "postgres:db"
@@ -35,14 +36,14 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - /c/nakama-docker/:/nakama/data
+      - ./:/nakama/data
     expose:
-      - "7349"
-      - "7350"
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT}"
       - "7351"
     ports:
-      - "7349:7349"
-      - "7350:7350"
+      - "${HTTP_PORT}:${HTTP_PORT}"
+      - "${GRPC_PORT}:${GRPC_PORT}"
       - "7351:7351"
     healthcheck:
       test: ["CMD", "/nakama/nakama", "healthcheck"]
