@@ -1,0 +1,21 @@
+{
+  "name": "data",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && copyfiles -u 1 build/index.js ../modules/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^24.2.1",
+    "copyfiles": "^2.4.1",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "nakama-runtime": "github:heroiclabs/nakama-common"
+  }
+}
