@@ -1,4 +1,4 @@
-FROM node:18-bullseye AS node-builder
+FROM node:alpine AS node-builder
 
 WORKDIR /backend
 
