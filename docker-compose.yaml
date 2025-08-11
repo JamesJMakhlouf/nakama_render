@@ -1,16 +1,59 @@
 version: "3"
 services:
+  postgres:
+    container_name: postgres
+    image: postgres:12.2-alpine
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+    volumes:
+      - data:/var/lib/postgresql/data
+    expose:
+      - "${DB_PORT}"
+      - "8080"
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
   nakama:
     container_name: nakama
     image: registry.heroiclabs.com/heroiclabs/nakama:3.22.0
     entrypoint:
       - "/bin/sh"
       - "-ecx"
-      - >
+      - |
+        echo "DB_USER=$DB_USER"
+        echo "DB_PASSWORD=$DB_PASSWORD"
+        echo "DB_HOST=$DB_HOST"
+        echo "DB_PORT=$DB_PORT"
+        echo "DB_NAME=$DB_NAME"
         /nakama/nakama migrate up --database.address postgres:${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME} &&
         exec /nakama/nakama --name nakama1 --database.address postgres:${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME} --logger.level DEBUG --session.token_expiry_sec 7200
     restart: always
+    links:
+      - "postgres:db"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./:/nakama/data
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT}"
+      - "7351"
     ports:
       - "${HTTP_PORT}:${HTTP_PORT}"
       - "${GRPC_PORT}:${GRPC_PORT}"
       - "7351:7351"
+    healthcheck:
+      test: ["CMD", "/nakama/nakama", "healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  data:
