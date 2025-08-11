@@ -10,6 +10,8 @@ RUN npm install
 # Copy everything else from data folder (source, configs)
 COPY data/ ./
 
+RUN chmod +x ./node_modules/.bin/tsc
+
 # Build your project (run build script from package.json)
 RUN npm run build
 
