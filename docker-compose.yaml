@@ -27,8 +27,8 @@ services:
       - "/bin/sh"
       - "-ecx"
       - >
-        /nakama/nakama migrate up --database.address ${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME} &&
-        exec /nakama/nakama --name nakama1 --database.address ${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME} --logger.level DEBUG --session.token_expiry_sec 7200        
+        /nakama/nakama migrate up --database.address postgres:${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME} &&
+        exec /nakama/nakama --name nakama1 --database.address postgres:${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME} --logger.level DEBUG --session.token_expiry_sec 7200        
     restart: always
     links:
       - "postgres:db"
